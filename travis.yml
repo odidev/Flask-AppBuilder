@@ -1,0 +1,17 @@
+language: python
+matrix:
+    include:
+        - python: '3.8'
+        - python: 3.8
+          arch: arm64
+sudo: false
+# running in the container-based infrastructure without access to sudo
+install:
+    - python -m pip install -U pip 
+    - apt-get install -y build-essential python3-dev libldap2-dev libsasl2-dev libssl-dev libmysqlclient-dev libpq-dev unixodbc-dev freetds-bin unixodbc-dev tdsodbc --yes              python3.8 setup.py install && pip3 install psycopg2-binary 
+    - pip install -r requirements.txt
+    - pip install -r requirements-dev.txt 
+    - pip install -r requirements-extra.txt 
+    - pip install nose
+script:
+    - nosetests --stop -v --with-coverage --cover-package=flask_appbuilder flask_appbuilder.tests --ignore-files="test_mongoengine\.py"
